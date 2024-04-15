@@ -1,4 +1,4 @@
-export const product = {
+const product = {
     'name': '',
     'price': 0,
     'description': ''
