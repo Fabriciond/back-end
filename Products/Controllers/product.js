@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator');
-const { db } = require('../Config/db');
-const product = require('../Models/product');
+const db = require('../Config/db');
+
 
 const getAll = (req, res) => {
     db.query('SELECT * FROM products', (err, result) => {
@@ -16,7 +16,13 @@ const getById = (req, res) => {
         if (err) {
             res.status(500).json({ error: err.message });
         }
-        res.send(result);
+        if (result.length === 0) {
+            res.status(404).json({ message: 'product not found' });
+            return;
+        }
+        res.send(result[0]);
+
+
     }
     );
 }
@@ -25,19 +31,21 @@ const create = (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const newProduct = { ...product, ...req.body };
-    db.query('INSERT INTO products (name,price,description)', newProduct, (err, result) => {
+    const newProduct = [req.body.name, req.body.price, req.body.description];
+    db.query('INSERT INTO products (name,price,description) VALUES (?,?,?)', newProduct, (err, result) => {
         if (err) {
             res.status(500).json({ error: err.message });
         }
-        res.send(result);
+        res.json({ message: 'success', id: result.insertId });
+
+
     }
     );
 }
 const update = (req, res) => {
     const productId = req.params.id;
     const { name, price, description } = req.body;
-    const update = 'UPDATE product SET ';
+    const update = 'UPDATE products SET ';
     const set = [];
     const values = [];
     if (name) {
@@ -67,10 +75,10 @@ const update = (req, res) => {
             return;
         }
         if (result.affectedRows === 0) {
-            res.status(404).json({ message: 'product not found'});
+            res.status(404).json({ message: 'product not found' });
             return;
         }
-        res.json({ message: 'succes' });
+        res.json({ message: 'success' });
     });
 }
 
@@ -78,8 +86,15 @@ const remove = (req, res) => {
     db.query('DELETE FROM products WHERE id = ?', [req.params.id], (err, result) => {
         if (err) {
             res.status(500).json({ error: err.message });
+            return;
         }
-        res.send(result);
+        if (result.affectedRows === 0) {
+            res.status(404).json({ message: 'product not found' });
+            return;
+        }
+        res.json({ message: 'success' });
     }
+
     );
 }
+module.exports = { getAll, getById, create, update, remove };
