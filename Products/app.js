@@ -21,7 +21,8 @@ app.post('/login', async (req, res) => {
     if (username !== 'admin' || password !== 'admin') {
         return res.status(401).json({ message: 'Invalid credentials' });
     }
-    const jwt = await new jose.SignJWT({ username: 'admin' })
+    const alg = "HS256";
+    const jwt = await new jose.SignJWT({ username: username })
         .setProtectedHeader({ alg })
         .setExpirationTime('2h')
         .sign(secret);

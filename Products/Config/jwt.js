@@ -1,6 +1,6 @@
 const jose = require('jose'); 
 const secret = new TextEncoder().encode('Marianaaaaaaa');
-const alg = "HS256";
+
 
 
 const verifyToken = (req, res, next) => {
