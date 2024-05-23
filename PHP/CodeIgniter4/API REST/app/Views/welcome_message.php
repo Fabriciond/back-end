@@ -12,7 +12,7 @@
             <div class="col-12 d-flex align-items-center justify-content-center flex-column">
                 <h1>API REST</h1>
                 <p>API REST con CodeIgniter 4</p>
-                <a href="<?= base_url('Users'); ?>" class="btn btn-primary">Ver Usuarios</a>
+                <a href="<?= base_url('User'); ?>" class="btn btn-primary">Ver Usuarios</a>
             </div>
         </div>
     </div>    
